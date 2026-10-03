@@ -1,0 +1,6 @@
+Building_Type,R2_Score,RMSE_kWh,Model_Path
+up00-2a-mobile_home,0.8490615943489335,0.20138334936526503,models/rf_model_up00-2a-mobile_home.joblib
+up00-2a-single-family_detached,0.9072709539738223,0.2574323272039644,models/rf_model_up00-2a-single-family_detached.joblib
+up00-2a-single-family_attached,0.9057697984823966,0.13208814375034206,models/rf_model_up00-2a-single-family_attached.joblib
+up00-2a-multi-family_with_2_-_4_units,0.9065955230933096,0.10192895351690388,models/rf_model_up00-2a-multi-family_with_2_-_4_units.joblib
+up00-2a-multi-family_with_5plus_units,0.9487463004561358,0.05383536292737963,models/rf_model_up00-2a-multi-family_with_5plus_units.joblib
