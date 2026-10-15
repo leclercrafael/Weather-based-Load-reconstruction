@@ -81,3 +81,4 @@ latex_report/*.toc
 latex_report/*.lof
 latex_report/*.lot
 latex_report/*.synctex.gz
+.DS_Store
