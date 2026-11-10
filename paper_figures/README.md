@@ -1,6 +1,6 @@
 # Paper figures — ERCOT Coast
 
-Eight figures for the Coast paper, regenerated from the current-best pipeline
+Ten figures for the Coast paper, regenerated from the current-best pipeline
 (LightGBM, feature set E, population-weighted county weather: the `_featureeng`
 outputs) and the metric CSVs. They replace the notebook figures in
 `latex_report/figures/`, which carry in-figure titles, raw labels, screen sizing and
@@ -8,7 +8,7 @@ superseded pipeline versions.
 
 - `pdf/` — vector, fonts embedded (Type 42), for `\includegraphics` in LaTeX.
 - `png/` — 300 dpi, for previews or Word.
-- `make_figures.py` — the single script that builds all eight.
+- `make_figures.py` — the single script that builds all ten.
 
 ```bash
 DATA_ROOT=/path/to/tamu_project uv run python paper_figures/make_figures.py
@@ -41,9 +41,16 @@ them and re-run.
 | 6 | `fig_feature_ablation_r2` | single | §V-A, Table II | medium |
 | 7 | `fig_load_duration_curve` | single | §V-C, shape metrics | medium |
 | 8 | `fig_bus_shape_diversity` | single | §V-C or §VI, limitation | optional |
+| 9 | `fig_calendar_heatmap` | double | §V-C, where the error sits in time | **high** |
+| 10 | `fig_load_density_map` | single | §IV-D, spatial distribution of demand | **high** |
 
-A 5-page limit will not hold all eight. The four "high" ones are what the draft lacks
-most: it currently has no results figure, and nothing shows the bus-level output itself.
+A 5-page limit will not hold all ten. The "high" ones are what the draft lacks most: it
+currently has no results figure, and nothing shows the spatial or bus-level output.
+Figs. 9 and 10 can replace 1 and 4 if space is tight.
+
+**Hour convention.** NREL and ERCOT stamps are hour-ending (01:00 = 00:00–01:00).
+Every hour-of-day axis here is shifted to hour-beginning, so hour 0 really is
+midnight to 1 a.m. and the midnight hour is counted in the right day and season.
 
 ---
 
@@ -57,7 +64,7 @@ most: it currently has no results figure, and nothing shows the bus-level output
 
 **2 — `fig_diurnal_shapes`**
 > Average diurnal profile by season (summer: Jun–Aug, winter: Dec–Feb) and day type,
-> ERCOT versus reconstruction. r is the correlation of the 24-hour profiles.
+> ERCOT versus reconstruction. r is the correlation of the 24-hour profiles. Hours are hour-beginning, EST.
 
 **3 — `fig_monthly_sector_stack`**
 > Monthly mean load by sector after calibration (flat industrial term, residential
@@ -86,14 +93,34 @@ most: it currently has no results figure, and nothing shows the bus-level output
 > residential bus and a bus with about half commercial energy. Because every bus shares
 > one weather series, shapes differ only through the archetype mix.
 
+**9 — `fig_calendar_heatmap`**
+> Hourly load by day of year (x) and hour of day (y), 2018: (a) ERCOT, (b) calibrated
+> reconstruction, (c) their difference (red: overestimate, blue: underestimate). The
+> reconstruction is too high during the day and too low at night all year, and most
+> too high on cold January mornings.
+
+**10 — `fig_load_density_map`**
+> Annual mean residential and commercial load density over the 12-county footprint,
+> before assignment to buses: each tract's (residential) and ZCTA's (commercial) load is
+> spread uniformly over its area on a 0.01° grid (log color scale). Light gray:
+> water-only tracts. Dots: the 204 load buses.
+
+The density map rebuilds each tract and ZCTA load from the same inputs as the
+notebooks (B25024 crosswalk, the notebook's own NAICS rules and sq ft factors) and
+asserts that they sum back exactly to `final_bus_building_counts.csv` and
+`bus_commercial_sqft.csv`. Uniform spreading puts some load on the water part of coastal
+tracts; say so in the caption if a reviewer might zoom in.
+
 ---
 
 ## Things to fix in the text when inserting these
 
-1. **Diurnal correlations.** The draft's §V-C quotes 0.980 / 0.961 / 0.915 / 0.798,
-   computed with the earlier factors (1.9, 1.3). With the (1.6, 1.3) of Table III, which
-   Fig. 2 uses, they are **0.979 / 0.959 / 0.922 / 0.797**. Update the text, the
-   abstract's "three of four above 0.91" still holds.
+1. **Diurnal correlations.** The draft's §V-C quotes 0.980 / 0.961 / 0.915 / 0.798.
+   Two things changed: Table III's factors are (1.6, 1.3), not the (1.9, 1.3) used
+   then, and the hours are now hour-beginning (the old code put the 23:00–24:00 hour in
+   the next day, so some weekend and season boundaries were off by one hour). Fig. 2
+   gives **0.979 / 0.960 / 0.918 / 0.820**. The abstract's "three of four above 0.91"
+   still holds.
 2. **Monthly bias** (Fig. 3, model / ERCOT − 1): Jan +17 %, Feb +10 %, Mar +4 %,
    Apr +7 %, May +1 %, Jun–Aug +2 to +3 %, Sep +10 %, Oct +9 %, Nov–Dec +8 %. Summer fits
    well; winter and shoulder months are overestimated. This matches the winter-weekend
